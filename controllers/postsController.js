@@ -5,24 +5,38 @@ let lastIndex = postList.length;
 
 function index(req, res) {
     //console.log("index");
-
-    const callback = (err, queryRes) => {
-        if (err) {
-            res.status(500).json({
-                error: 'Select query failed'
-            })
-        } else {
-            res.json(queryRes);
-        }
-    }
     const sql = `SELECT *
                 FROM posts`
-    conn.query(sql, callback);
+
+    conn.query(sql, (err, queryRes) => {
+        if (err) {
+            res.status(500).json({
+                error: 'Select id query failed'
+            })
+        } else {
+            res.json(queryRes)
+        }
+    })
 }
 
 function show(req, res) {
     //console.log("show");
-    res.json(req.post);
+
+    const { id } = req.params;
+
+    const sql = `SELECT *
+                FROM posts
+                WHERE id = ?`
+
+    conn.query(sql, [id], (err, queryRes) => {
+        if (err) {
+            res.status(500).json({
+                error: 'Select id query failed'
+            })
+        } else {
+            res.json(queryRes)
+        }
+    })
 }
 
 function store(req, res) {
