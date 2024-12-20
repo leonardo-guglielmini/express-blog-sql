@@ -9,7 +9,7 @@ function index(req, res) {
     const callback = (err, queryRes) => {
         if (err) {
             res.status(500).json({
-                error: 'Query failed'
+                error: 'Select query failed'
             })
         } else {
             res.json(queryRes);
@@ -95,13 +95,22 @@ function modify(req, res) {
 
 function destroy(req, res) {
     //console.log("destroy");
-    let index = (postList.indexOf(req.post));
 
-    postList.splice(index, 1);
+    const { id } = req.params
 
-    res.status(204);
-    res.send();
-    console.log(postList);
+    const sql = `DELETE
+                FROM posts
+                WHERE id = ?`
+
+    conn.query(sql, [id], (err) => {
+        if (err) {
+            res.status(500).json({
+                error: 'Delete query failed'
+            })
+        } else {
+            res.sendStatus(204)
+        }
+    })
 }
 
 function validateBody(req) {
