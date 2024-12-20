@@ -6,17 +6,18 @@ let lastIndex = postList.length;
 function index(req, res) {
     //console.log("index");
 
-    let taggedPostList = postList;
-    //console.log(req);
-
-    if (req.query.tag) {
-        //console.log(req.query.tag);
-        let tag = req.query.tag.charAt(0).toUpperCase() + req.query.tag.slice(1)
-        //console.log(tag);
-        taggedPostList = postList.filter((post) => { return post.tags.includes(tag) });
+    const callback = (err, queryRes) => {
+        if (err) {
+            res.status(500).json({
+                error: 'Query failed'
+            })
+        } else {
+            res.json(queryRes);
+        }
     }
-
-    res.json(taggedPostList);
+    const sql = `SELECT *
+                FROM posts`
+    conn.query(sql, callback);
 }
 
 function show(req, res) {
