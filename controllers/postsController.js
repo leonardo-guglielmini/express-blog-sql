@@ -6,7 +6,8 @@ let lastIndex = postList.length;
 function index(req, res) {
     //console.log("index");
     const sql = `SELECT *
-                FROM posts`
+                FROM posts
+                JOIN `
 
     conn.query(sql, (err, queryRes) => {
         if (err) {
@@ -24,9 +25,13 @@ function show(req, res) {
 
     const { id } = req.params;
 
-    const sql = `SELECT *
+    const sql = `SELECT posts.*, GROUP_CONCAT(tags.label SEPARATOR ',') as tags
                 FROM posts
-                WHERE id = ?`
+                JOIN post_tag
+                ON posts.id = post_tag.post_id
+                JOIN tags
+                ON post_tag.tag_id = tags.id
+                WHERE posts.id = 4;`
 
     conn.query(sql, [id], (err, queryRes) => {
         if (err) {
